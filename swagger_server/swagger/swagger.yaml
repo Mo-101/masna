@@ -1,0 +1,823 @@
+openapi: 3.1.0
+info:
+  title: MoStar API - Mastomys Natalensis Tracker
+  description: API for visualizing rodent habitats and projecting future locations
+  contact:
+    name: MoStar Industries
+    url: https://mo-overlord.tech
+  version: 1.2.0
+externalDocs:
+  description: Full API Documentation
+  url: https://mn1-ten.vercel.app
+servers:
+- url: https://mn1-ten.vercel.app
+  description: Production Server
+- url: https://mo-overlord.tech
+  description: Main Production Server
+paths:
+  /api/habitats:
+    post:
+      summary: Analyze satellite or environmental data to identify potential habitats
+        for Mastomys Natalensis.
+      operationId: api_habitats_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api_habitats_body'
+        required: true
+      responses:
+        "200":
+          description: Successful habitat detection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Bad Request - Missing or invalid input
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /api/train-model:
+    post:
+      summary: "Train machine learning models (CNN, SVM, Random Forest) using geospatial\
+        \ or satellite imagery."
+      operationId: api_train_model_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api_trainmodel_body'
+        required: true
+      responses:
+        "200":
+          description: Model trained successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: Bad Request - Missing model type or training data
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /api/predict-movements:
+    get:
+      summary: Forecast potential future movements of rodent populations.
+      operationId: api_predict_movements_get
+      parameters:
+      - name: location
+        in: query
+        description: Location for prediction
+        required: true
+        style: form
+        explode: true
+        schema: {}
+      - name: date
+        in: query
+        description: Date for prediction
+        required: true
+        style: form
+        explode: true
+        schema: {}
+      responses:
+        "200":
+          description: Predicted movements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "400":
+          description: Bad Request - Missing parameters
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /api/temporal-analysis:
+    post:
+      summary: Analyze temporal data for population dynamics using models like LSTM
+        or RNN.
+      operationId: api_temporal_analysis_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api_temporalanalysis_body'
+        required: true
+      responses:
+        "200":
+          description: Temporal analysis complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: Bad Request - Missing temporal data
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /api/data-transformation:
+    post:
+      summary: "Transform datasets for machine learning purposes (pivoting, melting,\
+        \ aggregation)."
+      operationId: api_data_transformation_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api_datatransformation_body'
+        required: true
+      responses:
+        "200":
+          description: Data transformed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: Bad Request - Missing dataset or transformation type
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /api/anomaly-detection:
+    post:
+      summary: Detect unusual patterns in environmental data using anomaly detection
+        models.
+      operationId: api_anomaly_detection_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api_anomalydetection_body'
+        required: true
+      responses:
+        "200":
+          description: Anomalies detected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: Bad Request - Missing environmental data
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /api/data-enrichment:
+    post:
+      summary: Enrich datasets with external sources (geospatial or weather data).
+      operationId: api_data_enrichment_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api_dataenrichment_body'
+        required: true
+      responses:
+        "200":
+          description: Data enriched with external sources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: Bad Request - Missing external data
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /augmentation/remote-sensing:
+    post:
+      summary: Apply Augmentation to Remote Sensing Data
+      description: Applies augmentation techniques to satellite imagery or LiDAR data
+        to improve detection accuracy for Mastomys Natalensis habitat mapping.
+      operationId: augmentation_remote_sensing_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/augmentation_remotesensing_body'
+        required: true
+      responses:
+        "200":
+          description: Augmentation applied successfully. Results URL will be provided
+            if applicable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "400":
+          description: Bad request due to invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error during augmentation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - OAuth2:
+        - write:userfiles
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /adaptive-learning:
+    post:
+      summary: Enable or configure adaptive learning
+      description: Configure adaptive learning parameters for continuous model improvements.
+      operationId: adaptive_learning_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MachineLearningModel'
+        required: true
+      responses:
+        "200":
+          description: Adaptive learning configured successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+        "400":
+          description: Bad request due to missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error during adaptive learning configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /context-aware:
+    post:
+      summary: Enable or configure context-aware responses
+      description: Set up context-aware response handling for dynamic and relevant
+        interactions.
+      operationId: context_aware_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RodentHabitatDetection'
+        required: true
+      responses:
+        "200":
+          description: Context-aware responses configured successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_6'
+        "400":
+          description: Bad request due to missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error during configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /data-quality:
+    post:
+      summary: Monitor and report data quality
+      description: "Checks data quality by identifying missing values, outliers, and\
+        \ other inconsistencies."
+      operationId: data_quality_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dataquality_body'
+        required: true
+      responses:
+        "200":
+          description: Data quality report generated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_7'
+        "400":
+          description: Invalid quality check type or data format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error during quality check.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /ml-preprocessing:
+    post:
+      summary: Preprocess data for ML
+      description: "Prepares data for ML, including encoding features and train/test\
+        \ splitting."
+      operationId: ml_preprocessing_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mlpreprocessing_body'
+        required: true
+      responses:
+        "200":
+          description: Data preprocessed and split successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_8'
+        "400":
+          description: Invalid encoding type or split ratio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MachineLearningModel'
+        "500":
+          description: Internal server error during preprocessing.
+      security:
+      - OAuth2:
+        - write:userfiles
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /rate-limiting:
+    post:
+      summary: Configure API rate limiting
+      description: Set rate limits to avoid overloading the API with too many requests.
+      operationId: rate_limiting_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MachineLearningModel/properties/training_data_source'
+        required: true
+      responses:
+        "200":
+          description: Rate limiting configured successfully.
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MachineLearningModel'
+        "429":
+          description: Too many requests.
+        "500":
+          description: Internal server error.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /caching:
+    post:
+      summary: Configure caching for performance optimization
+      description: Set caching strategies to improve performance for repeated queries.
+      operationId: caching_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/caching_body'
+        required: true
+      responses:
+        "200":
+          description: Caching configured successfully.
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MachineLearningModel'
+        "500":
+          description: Internal server error.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /integration/mapping/mapbox:
+    post:
+      summary: Integrate with Mapbox for interactive map visualization
+      description: "Provides integration with Mapbox to create and display interactive\
+        \ maps with geospatial data, including rodent habitat locations and environmental\
+        \ overlays."
+      operationId: integrate_mapbox
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mapping_mapbox_body'
+        required: true
+      responses:
+        "200":
+          description: Map visualization created successfully with Mapbox.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_9'
+        "400":
+          description: Bad request due to missing or invalid coordinates or overlay
+            data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error while creating map visualization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /integration/weather/openweather:
+    get:
+      summary: Retrieve real-time weather data from OpenWeather
+      description: Fetches real-time weather data for specified location coordinates
+        using the OpenWeather API.
+      operationId: integrate_openweather
+      parameters:
+      - name: latitude
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          description: Latitude of the location for weather data.
+      - name: longitude
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          description: Longitude of the location for weather data.
+      responses:
+        "200":
+          description: Weather data retrieved successfully from OpenWeather.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_10'
+        "400":
+          description: Bad request due to missing or invalid latitude or longitude
+            parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error while fetching weather data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    RemoteSensingAugmentation:
+      properties:
+        augmentation_type:
+          description: "Specifies the type of augmentation, including specific detection\
+            \ for Mastomys natalensis."
+          enum:
+          - image_augmentation
+          - geospatial_enhancement
+          - noise_filtering
+          - temporal_analysis
+          - mastomys_natalensis_detection
+        parameters:
+          $ref: '#/components/schemas/RemoteSensingAugmentation_parameters'
+    MastomysNatalensisDetection:
+      properties:
+        location_coordinates:
+          $ref: '#/components/schemas/RodentHabitatDetection'
+        image_data:
+          description: Base64 encoded image data for detection.
+        environmental_data:
+          $ref: '#/components/schemas/RodentHabitatDetection'
+        habitat_suitability:
+          $ref: '#/components/schemas/RodentHabitatDetection'
+    PredictionRequest:
+      properties:
+        prediction_parameters:
+          $ref: '#/components/schemas/PredictionRequest_prediction_parameters'
+    MachineLearningModel:
+      properties:
+        model_type:
+          description: Select the machine learning model for detection.
+          enum:
+          - cnn
+          - random_forest
+          - svm
+          - lstm
+          - isolation_forest
+        training_data_source:
+          description: "Dataset type used for model training, such as satellite or\
+            \ multispectral data."
+          enum:
+          - satellite_imagery
+          - multispectral
+          - LiDAR
+        hyperparameters:
+          $ref: '#/components/schemas/MachineLearningModel_hyperparameters'
+        augmentation_enabled:
+          description: Toggle to apply data augmentation before training the model.
+    TemporalAnalysis:
+      properties:
+        time_period:
+          description: "Time period for tracking population dynamics (e.g., seasonal,\
+            \ yearly)."
+        model_type:
+          description: Model for performing time-series analysis.
+          enum:
+          - lstm
+          - rnn
+        input_data:
+          description: "The dataset used for temporal analysis (e.g., weather patterns,\
+            \ satellite data)."
+        forecast_horizon:
+          description: Number of periods to forecast into the future.
+    RodentHabitatDetection:
+      properties:
+        input_data:
+          description: Satellite imagery or LiDAR data to be analyzed.
+        model_used:
+          description: Machine learning model to use for detection.
+          enum:
+          - cnn
+          - random_forest
+          - svm
+        geospatial_analysis:
+          description: Enable geospatial overlays to refine the detection of suitable
+            habitats.
+        overlays:
+          $ref: '#/components/schemas/MastomysNatalensisDetection'
+        output_format:
+          description: Format for the output data.
+          enum:
+          - geojson
+          - shapefile
+          - csv
+    DetectionResult:
+      properties:
+        result_url:
+          description: "URL to download detection results (e.g., CSV or GeoJSON)."
+        format:
+          description: The output format for the detection results.
+          enum:
+          - geojson
+          - shapefile
+          - csv
+    ErrorResponse:
+      properties:
+        error:
+          description: Error message for the failed request.
+    PredictionResult:
+      properties:
+        prediction_success:
+          description: Indicates whether the prediction was successful.
+        predicted_locations:
+          description: List of predicted coordinates with suitability scores.
+          items:
+            properties:
+              latitude:
+                maximum: 90
+                minimum: -90
+                description: Latitude of predicted location
+              longitude:
+                maximum: 180
+                minimum: -180
+                description: Longitude of predicted location
+              suitability_score:
+                maximum: 1
+                minimum: 0
+                description: "Suitability score for habitat, from 0 to 1"
+              confidence:
+                maximum: 1
+                minimum: 0
+                description: Prediction confidence level from 0 to 1
+    api_habitats_body:
+      properties:
+        satellite_data:
+          description: Base64 encoded satellite imagery data for habitat detection
+    inline_response_200:
+      properties:
+        status: {}
+        data:
+          $ref: '#/components/schemas/inline_response_200_data'
+      example:
+        data:
+          habitat: ""
+          location: ""
+        status: ""
+    api_trainmodel_body:
+      properties:
+        model_type:
+          description: Model type to train
+          enum:
+          - CNN
+          - SVM
+          - Random Forest
+        training_data:
+          description: Data for training the model
+    inline_response_200_1:
+      properties:
+        status: {}
+        message: {}
+      example:
+        message: ""
+        status: ""
+    inline_response_200_2:
+      properties:
+        status: {}
+        data:
+          $ref: '#/components/schemas/inline_response_200_2_data'
+      example:
+        data:
+          predictions: ""
+        status: ""
+    api_temporalanalysis_body:
+      properties:
+        temporal_data:
+          description: Data for temporal analysis
+    inline_response_200_3:
+      properties:
+        status: {}
+        data: {}
+      example:
+        data: ""
+        status: ""
+    api_datatransformation_body:
+      properties:
+        dataset:
+          description: Dataset to transform
+        transformation_type:
+          description: Type of transformation
+          enum:
+          - pivot
+          - melt
+          - aggregation
+    api_anomalydetection_body:
+      properties:
+        environmental_data:
+          description: Environmental data for anomaly detection
+    api_dataenrichment_body:
+      properties:
+        external_data:
+          description: External data for enrichment
+    augmentation_remotesensing_body:
+      properties:
+        augmentation_type:
+          description: Specifies the type of augmentation to apply.
+          enum:
+          - image_augmentation
+          - geospatial_enhancement
+          - noise_filtering
+          - temporal_analysis
+        parameters:
+          description: "Additional parameters for augmentation, including resolution\
+            \ adjustments."
+    inline_response_200_4:
+      properties:
+        result_url:
+          description: URL for downloading augmented data.
+      example:
+        result_url: ""
+    inline_response_200_5:
+      properties:
+        status:
+          description: Success or failure status of the adaptive learning configuration.
+        details:
+          description: Details on adaptive learning configuration applied.
+      example:
+        details: ""
+        status: ""
+    inline_response_200_6:
+      properties:
+        status:
+          description: Status of context-aware configuration.
+        message:
+          description: Confirmation message for successful setup.
+      example:
+        message: ""
+        status: ""
+    dataquality_body:
+      properties:
+        input_data:
+          description: Dataset for quality checks.
+          items: {}
+        quality_checks:
+          description: "Quality checks to perform, such as 'missing_values' and 'outliers'."
+          items: {}
+    inline_response_200_7:
+      properties:
+        quality_report_url:
+          description: URL to download the data quality report.
+      example:
+        quality_report_url: ""
+    mlpreprocessing_body:
+      properties:
+        input_data:
+          description: The dataset to preprocess for ML.
+          items: {}
+        encoding_type:
+          description: "Encoding type for categorical features, such as 'one-hot'."
+          enum:
+          - one-hot
+          - label
+        train_test_split:
+          maximum: 1
+          minimum: 0
+          description: "Ratio for splitting data into training and test sets, between\
+            \ 0 and 1."
+    inline_response_200_8:
+      properties:
+        message:
+          description: Confirmation of successful preprocessing.
+      example:
+        message: ""
+    caching_body:
+      properties:
+        cache_type:
+          description: "Type of caching mechanism, e.g., 'in-memory', 'disk'."
+        cache_duration:
+          description: Duration in seconds for how long the cache should be stored.
+    mapping_mapbox_body:
+      properties:
+        coordinates:
+          description: Array of coordinates to plot on the Mapbox map.
+          items:
+            properties:
+              latitude:
+                description: Latitude for the map point.
+              longitude:
+                description: Longitude for the map point.
+        overlays:
+          description: "List of overlay layers, such as habitat or vegetation coverage."
+          items: {}
+    inline_response_200_9:
+      properties:
+        status: {}
+        map_url:
+          description: URL to the interactive map generated with Mapbox.
+      example:
+        map_url: ""
+        status: ""
+    inline_response_200_10:
+      properties:
+        temperature:
+          description: Current temperature at the specified location.
+        humidity:
+          description: Current humidity level at the specified location.
+        wind_speed:
+          description: Current wind speed at the specified location.
+        weather_description:
+          description: Brief description of the current weather.
+      example:
+        weather_description: ""
+        temperature: ""
+        humidity: ""
+        wind_speed: ""
+    RemoteSensingAugmentation_parameters:
+      properties:
+        resolution:
+          description: Resolution of the augmentation process
+        additional_param:
+          description: Any additional parameter
+    PredictionRequest_prediction_parameters:
+      properties:
+        time_frame:
+          description: "Time frame for prediction, e.g., 'yearly', 'monthly'"
+        environmental_data:
+          description: Relevant environmental data for prediction input
+      description: The parameters to make predictions
+    MachineLearningModel_hyperparameters:
+      properties:
+        learning_rate:
+          description: "Learning rate for the model (e.g., 0.01)"
+        batch_size:
+          description: "Batch size for training (e.g., 32)"
+    inline_response_200_data:
+      properties:
+        habitat: {}
+        location: {}
+      example:
+        habitat: ""
+        location: ""
+    inline_response_200_2_data:
+      properties:
+        predictions: {}
+      example:
+        predictions: ""
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.microsoftonline.com/2e270476-4cbe-4c7f-b99a-8710d225bcc6/oauth2/v2.0/authorize
+          tokenUrl: https://login.microsoftonline.com/2e270476-4cbe-4c7f-b99a-8710d225bcc6/oauth2/v2.0/token
+          scopes:
+            read:userfiles: Grants read access to user files
+            write:userfiles: Grants write access to user files
+            data:read: Grants read access to all data
+            data:write: Grants write access to all data
+      x-tokenInfoFunc: swagger_server.controllers.authorization_controller.check_OAuth2
+      x-scopeValidateFunc: swagger_server.controllers.authorization_controller.validate_scope_OAuth2
+
